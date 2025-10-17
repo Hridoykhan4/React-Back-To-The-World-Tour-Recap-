@@ -5,12 +5,14 @@ import Countries from "./components/Countries/Countries";
 function App() {
   const [countries, setCountries] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 25
+  const pageSize = 25;
   const pages = Math.ceil(countries.length / pageSize);
 
-
-  const startIndex= (currentPage - 1) * pageSize;
-  const currentCountries = [...countries].slice(startIndex, startIndex + pageSize)
+  const startIndex = (currentPage - 1) * pageSize;
+  const currentCountries = [...countries].slice(
+    startIndex,
+    startIndex + pageSize
+  );
 
   useEffect(() => {
     fetch(`../countries.json`)
@@ -20,22 +22,43 @@ function App() {
 
   return (
     <main className="w-11/12 mx-auto py-4">
-      <Countries countries={countries} currentCountries={currentCountries}></Countries>
-      <div className="flex gap-3 flex-wrap justify-center items-center py-10">
-        {[...Array(pages)].map((_, i) => (
+      <Countries
+        setCountries={setCountries}
+        countries={countries}
+        currentCountries={currentCountries}
+      ></Countries>
+      {countries?.length > 2 && (
+        <div className="flex gap-3 flex-wrap justify-center items-center py-10">
           <button
-           key={i}
-            onClick={() => {
-              setCurrentPage(i + 1);
-            }}
-            className={`btn ${
-              currentPage === i + 1 ? "btn-warning text-white" : ""
-            }`}
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+            className="btn btn-primary"
           >
-            {i + 1}
+            ⬅️ Prev
           </button>
-        ))}
-      </div>
+          {[...Array(pages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => {
+                setCurrentPage(i + 1);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className={`btn ${
+                currentPage === i + 1 ? "btn-warning text-white" : "btn-outline"
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            disabled={currentPage === pages}
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+            className="btn btn-primary"
+          >
+            Next ➡️
+          </button>
+        </div>
+      )}
     </main>
   );
 }
