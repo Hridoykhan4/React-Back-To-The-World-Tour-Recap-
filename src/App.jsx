@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import Countries from "./components/Countries/Countries";
 
 function App() {
   const [countries, setCountries] = useState([]);
+   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 25;
   const pages = Math.ceil(countries.length / pageSize);
 
   const startIndex = (currentPage - 1) * pageSize;
-  const currentCountries = [...countries].slice(
-    startIndex,
-    startIndex + pageSize
+  const currentCountries = useMemo(
+    () => [...countries].slice(startIndex, startIndex + pageSize),
+    [countries, startIndex]
   );
 
   useEffect(() => {
@@ -23,11 +24,13 @@ function App() {
   return (
     <main className="w-11/12 mx-auto py-4">
       <Countries
-        setCountries={setCountries}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
+        setCurrentPage={setCurrentPage}
         countries={countries}
         currentCountries={currentCountries}
       ></Countries>
-      {countries?.length > 2 && (
+      {!searchValue.trim() && (
         <div className="flex gap-3 flex-wrap justify-center items-center py-10">
           <button
             disabled={currentPage === 1}
@@ -41,7 +44,7 @@ function App() {
               key={i}
               onClick={() => {
                 setCurrentPage(i + 1);
-                window.scrollTo({ top: 0, behavior: "smooth" });
+                // window.scrollTo({ top: 0, behavior: "smooth" });
               }}
               className={`btn ${
                 currentPage === i + 1 ? "btn-warning text-white" : "btn-outline"

@@ -3,17 +3,27 @@ import Country from "../Country/Country";
 import VisitedCountries from "../VisitedCountries/VisitedCountries";
 import { addToDB, getStoredCountries, removeFromDB } from "../../utils/localDB";
 
-const Countries = ({ countries = [], currentCountries = [] }) => {
+const Countries = ({
+  countries = [],
+  currentCountries = [],
+  setCurrentPage,
+  setSearchValue,
+  searchValue,
+}) => {
   const [visitedCountries, setVisitedCountries] = useState([]);
-  const [searchValue, setSearchValue] = useState("");
+
+
+  // Handle Search Country
   const filteredCountries = useMemo(() => {
     if (!searchValue.trim()) return currentCountries;
     return countries.filter((c) =>
-      c.name.toLowerCase().includes(searchValue.toLowerCase())
+      c.name.trim().toLowerCase().includes(searchValue.trim().toLowerCase())
     );
   }, [searchValue, countries, currentCountries]);
 
+  // 
   const handleVisitedCountries = (country, visitStatus) => {
+    console.log(visitStatus);
     if (visitStatus) {
       const alreadyVisited = visitedCountries.some(
         (c) => c.numericCode === country.numericCode
@@ -66,7 +76,10 @@ const Countries = ({ countries = [], currentCountries = [] }) => {
         <input
           type="text"
           placeholder="Search By Name"
-          onChange={(e) => setSearchValue(e.target.value)}
+          onChange={(e) => {
+            setSearchValue(e.target.value);
+            setCurrentPage(1);
+          }}
           className="input input-info"
         />
       </div>

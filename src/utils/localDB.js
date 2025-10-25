@@ -10,10 +10,9 @@ const addToDB = (id) => {
 };
 
 const removeFromDB = (id) => {
-      const storedItems = getStoredCountries();
-      const remaining = storedItems.filter(i => i !== id);
-      localStorage.setItem("countries-visited", JSON.stringify(remaining));
+  const storedItems = getStoredCountries();
+  const remaining = storedItems.filter((i) => i !== id);
+  localStorage.setItem("countries-visited", JSON.stringify(remaining));
+};
 
-}
-
-export {addToDB, getStoredCountries, removeFromDB}
+export { addToDB, getStoredCountries, removeFromDB };
